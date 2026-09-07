@@ -1,44 +1,35 @@
 package helper
 
 import (
-	"errors"
-	"os"
 	"time"
+	"user-service/app/internal/config"
 	"user-service/app/internal/entity"
 
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/joho/godotenv"
 )
 
+type JwtCustomClaims struct {
+	UserID uint   `json:"user_id"`
+	Email  string `json:"email"`
+	Role   string `json:"role"`
+	jwt.RegisteredClaims
+}
+
 func GenerateToken(user *entity.User) (string, error) {
-	secret := os.Getenv("JWT_SECRET")
-
-	if secret == "" {
-		env, err := godotenv.Read("secret.env")
-		if err != nil {
-			return "", err
-		}
-
-		secret = env["JWT_SECRET"]
-	}
-
-	if secret == "" {
-		return "", errors.New("JWT_SECRET is not configured")
-	}
-
-	claims := jwt.MapClaims{
-		"user_id": user.ID,
-		"email":   user.Email,
-		"role":    user.Role,
-		"exp":     time.Now().Add(24 * time.Hour).Unix(),
+	claims := &JwtCustomClaims{
+		user.ID,
+		user.Email,
+		user.Role,
+		jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 3)),
+		},
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-
-	signedToken, err := token.SignedString([]byte(secret))
+	secret, err := config.JWTSecret()
 	if err != nil {
 		return "", err
 	}
 
-	return signedToken, nil
+	return token.SignedString(secret)
 }

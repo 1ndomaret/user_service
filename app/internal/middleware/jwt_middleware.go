@@ -1,51 +1,27 @@
 package middleware
 
 import (
-	"strings"
 	"user-service/app/internal/helper"
 
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v5"
 )
 
-func JWTMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
+func ParseJwtClaims(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c *echo.Context) error {
-		authHeader := c.Request().Header.Get("Authorization")
-
-		if authHeader == "" {
-			return helper.Unauthorized(c, "missing authorization header")
-		}
-
-		if !strings.HasPrefix(authHeader, "Bearer ") {
-			return helper.Unauthorized(c, "invalid authorization header")
-		}
-
-		tokenString := strings.TrimPrefix(authHeader, "Bearer ")
-
-		env, err := godotenv.Read("secret.env")
+		token, err := echo.ContextGet[*jwt.Token](c, "user")
 		if err != nil {
-			return helper.InternalServerError(c, "failed to load environment")
+			return helper.Unauthorized(c, "Invalid or missing token")
 		}
 
-		secret := env["JWT_SECRET"]
-
-		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-			return []byte(secret), nil
-		})
-
-		if err != nil || !token.Valid {
-			return helper.Unauthorized(c, "invalid or expired token")
-		}
-
-		claims, ok := token.Claims.(jwt.MapClaims)
+		claims, ok := token.Claims.(helper.JwtCustomClaims)
 		if !ok {
-			return helper.Unauthorized(c, "invalid token claims")
+			return helper.Unauthorized(c, "Failed to parse claims")
 		}
 
-		c.Set("user_id", claims["user_id"])
-		c.Set("email", claims["email"])
-		c.Set("role", claims["role"])
+		c.Set("user_id", claims.UserID)
+		c.Set("email", claims.Email)
+		c.Set("role", claims.Role)
 
 		return next(c)
 	}
