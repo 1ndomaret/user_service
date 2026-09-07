@@ -50,13 +50,18 @@ func (u *userUsecase) Register(req domain.RegisterRequest) (*entity.User, error)
 		return nil, err
 	}
 
+	userID := uuid.New()
 	user := &entity.User{
-		ID:       uuid.New(),
+		ID:       userID,
 		Name:     req.Name,
 		Email:    req.Email,
 		Password: string(hashedPassword),
 		Phone:    req.Phone,
 		Role:     req.Role,
+		DonorProfile: &entity.DonorProfile{
+			ID:     uuid.New(),
+			UserID: userID,
+		},
 	}
 
 	if err := u.userRepository.Create(user); err != nil {

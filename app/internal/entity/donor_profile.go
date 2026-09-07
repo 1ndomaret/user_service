@@ -18,5 +18,5 @@ type DonorProfile struct {
 	CreatedAt        time.Time  `json:"created_at"`
 	UpdatedAt        time.Time  `json:"updated_at"`
 
-	User *User `gorm:"foreignKey:UserID;" json:"user,omitempty"`
+	User *User `gorm:"foreignKey:UserID;" json:"-"`
 }
