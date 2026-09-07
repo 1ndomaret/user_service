@@ -2,22 +2,25 @@ package domain
 
 import (
 	"context"
+	"errors"
 	"user-service/app/internal/entity"
+
+	"github.com/google/uuid"
 )
 
-type CreateProfileRequest struct {
-}
+var (
+	ErrProfileNotFound = errors.New("profile not found")
+)
 
 type UpdateProfileRequest struct {
 }
 
 type DonorProfileRepository interface {
-	Create(ctx context.Context, req *CreateProfileRequest) (*entity.DonorProfile, error)
-	GetProfile(ctx context.Context) (*entity.DonorProfile, error)
+	GetProfile(ctx context.Context, userID uuid.UUID) (*entity.DonorProfile, error)
 	Update(ctx context.Context, req *UpdateProfileRequest) (*entity.DonorProfile, error)
 }
 
 type DonorProfileUsecase interface {
-	GetProfile() (*entity.DonorProfile, error)
+	GetProfile(userID uuid.UUID) (*entity.DonorProfile, error)
 	Update(req *UpdateProfileRequest) (*entity.DonorProfile, error)
 }

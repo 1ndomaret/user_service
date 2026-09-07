@@ -2,8 +2,11 @@ package repository
 
 import (
 	"context"
+	"errors"
 	"user-service/app/internal/domain"
 	"user-service/app/internal/entity"
+
+	"github.com/google/uuid"
 
 	"gorm.io/gorm"
 )
@@ -18,12 +21,17 @@ func NewDonorProfileRepository(db *gorm.DB) domain.DonorProfileRepository {
 	}
 }
 
-func (r *donorProfileRepository) Create(ctx context.Context, req *domain.CreateProfileRequest) (*entity.DonorProfile, error) {
-	return nil, nil
-}
+func (r *donorProfileRepository) GetProfile(ctx context.Context, userID uuid.UUID) (*entity.DonorProfile, error) {
+	var profile entity.DonorProfile
 
-func (r *donorProfileRepository) GetProfile(ctx context.Context) (*entity.DonorProfile, error) {
-	return nil, nil
+	if err := r.db.WithContext(ctx).Where("user_id = ?", userID).First(&profile).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, domain.ErrProfileNotFound
+		}
+		return nil, err
+	}
+
+	return &profile, nil
 }
 
 func (r *donorProfileRepository) Update(ctx context.Context, req *domain.UpdateProfileRequest) (*entity.DonorProfile, error) {
