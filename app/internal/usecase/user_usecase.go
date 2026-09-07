@@ -33,6 +33,7 @@ func (u *userUsecase) Register(req domain.RegisterRequest) (*entity.User, error)
 		return nil, domain.ErrInvalidInput
 	}
 
+	// TODO: check role viability
 	// if req.Role != "donor" && req.Role != "requester" {
 	// 	return nil, domain.ErrInvalidInput
 	// }
