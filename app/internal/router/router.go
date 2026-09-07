@@ -10,5 +10,6 @@ func Register(e *echo.Echo, userHandler *handler.UserHandler) {
 	api := e.Group("/api/v1")
 	public := api.Group("")
 
-	public.POST("/users/register", userHandler.RegisterUser)
+	public.POST("/users/register", userHandler.Register)
+	public.POST("/users/login", userHandler.Login)
 }

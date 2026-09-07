@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"user-service/app/internal/config"
+	"user-service/app/internal/entity"
 	"user-service/app/internal/handler"
 	"user-service/app/internal/repository"
 	"user-service/app/internal/router"
@@ -15,6 +16,10 @@ func main() {
 	db, err := config.InitDB()
 	if err != nil {
 		log.Fatal(err)
+	}
+
+	if err := db.AutoMigrate(&entity.User{}); err != nil {
+		log.Fatal("failed to migrate database:", err)
 	}
 
 	userRepository := repository.NewUserRepository(db)
