@@ -7,6 +7,7 @@ import (
 	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"gorm.io/gorm/schema"
 )
 
 func InitDB() (*gorm.DB, error) {
@@ -25,7 +26,11 @@ func InitDB() (*gorm.DB, error) {
 		host, user, password, dbname, port,
 	)
 
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
+		NamingStrategy: schema.NamingStrategy{
+			TablePrefix: "team_2.",
+		},
+	})
 	if err != nil {
 		fmt.Println("cant connect db:", err)
 		return nil, err
