@@ -11,4 +11,6 @@ type User struct {
 	Role      string    `gorm:"not null" json:"role"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
+
+	DonorProfile *DonorProfile `gorm:"foreignKey:UserID;references:ID" json:"donor_profile,omitempty"`
 }

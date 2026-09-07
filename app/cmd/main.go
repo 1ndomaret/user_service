@@ -26,10 +26,15 @@ func main() {
 	userUsecase := usecase.NewUserUsecase(userRepository)
 	userHandler := handler.NewUserHandler(userUsecase)
 
+	donorProfileRepository := repository.NewDonorProfileRepository(db)
+	donorProfileUsecase := usecase.NewDonorProfileUsecase(donorProfileRepository)
+	donorProfileHandler := handler.NewDonorProfileHandler(donorProfileUsecase)
+
 	e := echo.New()
 
 	router.Register(e,
 		userHandler,
+		donorProfileHandler,
 	)
 	if err := e.Start(":1323"); err != nil {
 		e.Logger.Error("failed to start server", "error", err)

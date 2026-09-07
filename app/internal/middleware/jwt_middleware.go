@@ -1,9 +1,11 @@
 package middleware
 
 import (
+	"user-service/app/internal/config"
 	"user-service/app/internal/helper"
 
 	"github.com/golang-jwt/jwt/v5"
+	echojwt "github.com/labstack/echo-jwt/v5"
 	"github.com/labstack/echo/v5"
 )
 
@@ -24,5 +26,19 @@ func ParseJwtClaims(next echo.HandlerFunc) echo.HandlerFunc {
 		c.Set("role", claims.Role)
 
 		return next(c)
+	}
+}
+
+func JwtConfig() echojwt.Config {
+	secret, _ := config.JWTSecret()
+
+	return echojwt.Config{
+		NewClaimsFunc: func(c *echo.Context) jwt.Claims {
+			return new(helper.JwtCustomClaims)
+		},
+		ErrorHandler: func(c *echo.Context, err error) error {
+			return helper.Unauthorized(c, "Missing or invalid token")
+		},
+		SigningKey: secret,
 	}
 }
