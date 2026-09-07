@@ -16,7 +16,7 @@ func ParseJwtClaims(next echo.HandlerFunc) echo.HandlerFunc {
 			return helper.Unauthorized(c, "Invalid or missing token")
 		}
 
-		claims, ok := token.Claims.(helper.JwtCustomClaims)
+		claims, ok := token.Claims.(*helper.JwtCustomClaims)
 		if !ok {
 			return helper.Unauthorized(c, "Failed to parse claims")
 		}

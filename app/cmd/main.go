@@ -18,7 +18,10 @@ func main() {
 		log.Fatal(err)
 	}
 
-	if err := db.AutoMigrate(&entity.User{}); err != nil {
+	if err := db.AutoMigrate(
+		&entity.User{},
+		&entity.DonorProfile{},
+	); err != nil {
 		log.Fatal("failed to migrate database:", err)
 	}
 

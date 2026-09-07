@@ -6,6 +6,8 @@ import (
 	"user-service/app/internal/entity"
 	"user-service/app/internal/helper"
 
+	"github.com/google/uuid"
+
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -31,9 +33,9 @@ func (u *userUsecase) Register(req domain.RegisterRequest) (*entity.User, error)
 		return nil, domain.ErrInvalidInput
 	}
 
-	if req.Role != "donor" && req.Role != "requester" {
-		return nil, domain.ErrInvalidInput
-	}
+	// if req.Role != "donor" && req.Role != "requester" {
+	// 	return nil, domain.ErrInvalidInput
+	// }
 
 	existingUser, err := u.userRepository.GetByEmail(req.Email)
 	if err == nil && existingUser != nil {
@@ -49,6 +51,7 @@ func (u *userUsecase) Register(req domain.RegisterRequest) (*entity.User, error)
 	}
 
 	user := &entity.User{
+		ID:       uuid.New(),
 		Name:     req.Name,
 		Email:    req.Email,
 		Password: string(hashedPassword),

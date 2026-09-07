@@ -5,13 +5,15 @@ import (
 	"user-service/app/internal/config"
 	"user-service/app/internal/entity"
 
+	"github.com/google/uuid"
+
 	"github.com/golang-jwt/jwt/v5"
 )
 
 type JwtCustomClaims struct {
-	UserID uint   `json:"user_id"`
-	Email  string `json:"email"`
-	Role   string `json:"role"`
+	UserID uuid.UUID `json:"user_id"`
+	Email  string    `json:"email"`
+	Role   string    `json:"role"`
 	jwt.RegisteredClaims
 }
 

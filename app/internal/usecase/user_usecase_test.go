@@ -6,6 +6,8 @@ import (
 	"user-service/app/internal/domain"
 	"user-service/app/internal/entity"
 
+	"github.com/google/uuid"
+
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -125,7 +127,7 @@ func TestRegisterInvalidRole(t *testing.T) {
 func TestRegisterDuplicateEmail(t *testing.T) {
 	repo := &fakeUserRepository{
 		existingUser: &entity.User{
-			ID:    1,
+			ID:    uuid.New(),
 			Name:  "Existing User",
 			Email: "imam@mail.com",
 		},
@@ -169,7 +171,7 @@ func TestLoginSuccess(t *testing.T) {
 
 	repo := &fakeUserRepository{
 		existingUser: &entity.User{
-			ID:       1,
+			ID:       uuid.New(),
 			Name:     "Imam",
 			Email:    "imam@mail.com",
 			Password: string(hashedPassword),
@@ -208,7 +210,7 @@ func TestLoginWrongPassword(t *testing.T) {
 
 	repo := &fakeUserRepository{
 		existingUser: &entity.User{
-			ID:       1,
+			ID:       uuid.New(),
 			Email:    "imam@mail.com",
 			Password: string(hashedPassword),
 			Role:     "donor",

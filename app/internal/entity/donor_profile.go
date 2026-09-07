@@ -1,10 +1,14 @@
 package entity
 
-import "time"
+import (
+	"time"
+
+	"github.com/google/uuid"
+)
 
 type DonorProfile struct {
-	ID               uint       `gorm:"primaryKey" json:"id"`
-	UserID           uint       `gorm:"uniqueIndex;not null" json:"user_id"`
+	ID               uuid.UUID  `gorm:"type:uuid;primaryKey" json:"id"`
+	UserID           uuid.UUID  `gorm:"type:uuid;uniqueIndex;not null" json:"user_id"`
 	BloodType        string     `gorm:"not null" json:"blood_type"`
 	City             string     `gorm:"not null" json:"city"`
 	Latitude         float64    `json:"latitude"`
