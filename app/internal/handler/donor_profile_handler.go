@@ -33,5 +33,21 @@ func (h *DonorProfileHandler) GetProfile(c *echo.Context) error {
 }
 
 func (h *DonorProfileHandler) UpdateProfile(c *echo.Context) error {
-	return helper.Success(c, 200, "Updated", "Profile")
+	userID, ok := c.Get("user_id").(uuid.UUID)
+	if !ok {
+		return helper.Unauthorized(c, "invalid or missing token")
+	}
+
+	var req domain.UpdateProfileRequest
+
+	if err := c.Bind(&req); err != nil {
+		return helper.BadRequest(c, err.Error())
+	}
+
+	profile, err := h.donorUsecase.Update(userID, &req)
+	if err != nil {
+		return helper.BadRequest(c, err.Error())
+	}
+
+	return helper.Success(c, 200, "Updated", profile)
 }

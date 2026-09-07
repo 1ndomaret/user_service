@@ -10,12 +10,12 @@ import (
 )
 
 type donorProfileUsecase struct {
-	donorProfileRepo domain.DonorProfileRepository
+	donorRepo domain.DonorProfileRepository
 }
 
-func NewDonorProfileUsecase(donorProfileRepo domain.DonorProfileRepository) domain.DonorProfileUsecase {
+func NewDonorProfileUsecase(donorRepo domain.DonorProfileRepository) domain.DonorProfileUsecase {
 	return &donorProfileUsecase{
-		donorProfileRepo: donorProfileRepo,
+		donorRepo: donorRepo,
 	}
 }
 
@@ -25,12 +25,38 @@ func (u *donorProfileUsecase) GetProfile(userID uuid.UUID) (*entity.DonorProfile
 	ctx, cancel := context.WithTimeout(context.TODO(), timeOut)
 	defer cancel()
 
-	return u.donorProfileRepo.GetProfile(ctx, userID)
+	return u.donorRepo.GetProfile(ctx, userID)
 }
 
-func (u *donorProfileUsecase) Update(req *domain.UpdateProfileRequest) (*entity.DonorProfile, error) {
+func (u *donorProfileUsecase) Update(userID uuid.UUID, req *domain.UpdateProfileRequest) (*entity.DonorProfile, error) {
 	ctx, cancel := context.WithTimeout(context.TODO(), timeOut)
 	defer cancel()
 
-	return u.donorProfileRepo.Update(ctx, req)
+	profile, err := u.donorRepo.GetProfile(ctx, userID)
+	if err != nil {
+		return nil, err
+	}
+
+	// nil checks, ignore if nil
+	if req.BloodType != nil {
+		profile.BloodType = *req.BloodType
+	}
+	if req.City != nil {
+		profile.City = *req.City
+	}
+	if req.Latitude != nil {
+		profile.Latitude = *req.Latitude
+	}
+	if req.Longitude != nil {
+		profile.Longitude = *req.Longitude
+	}
+	if req.IsAvailable != nil {
+		profile.IsAvailable = *req.IsAvailable
+	}
+
+	if err := u.donorRepo.Update(ctx, profile); err != nil {
+		return nil, err
+	}
+
+	return profile, nil
 }

@@ -13,14 +13,19 @@ var (
 )
 
 type UpdateProfileRequest struct {
+	BloodType   *string  `json:"blood_type,omitempty"`
+	City        *string  `json:"city,omitempty"`
+	Latitude    *float64 `json:"latitude,omitempty"`
+	Longitude   *float64 `json:"longitude,omitempty"`
+	IsAvailable *bool    `json:"is_available,omitempty"`
 }
 
 type DonorProfileRepository interface {
 	GetProfile(ctx context.Context, userID uuid.UUID) (*entity.DonorProfile, error)
-	Update(ctx context.Context, req *UpdateProfileRequest) (*entity.DonorProfile, error)
+	Update(ctx context.Context, req *entity.DonorProfile) error
 }
 
 type DonorProfileUsecase interface {
 	GetProfile(userID uuid.UUID) (*entity.DonorProfile, error)
-	Update(req *UpdateProfileRequest) (*entity.DonorProfile, error)
+	Update(userID uuid.UUID, req *UpdateProfileRequest) (*entity.DonorProfile, error)
 }

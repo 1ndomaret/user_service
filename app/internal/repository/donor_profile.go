@@ -34,6 +34,6 @@ func (r *donorProfileRepository) GetProfile(ctx context.Context, userID uuid.UUI
 	return &profile, nil
 }
 
-func (r *donorProfileRepository) Update(ctx context.Context, req *domain.UpdateProfileRequest) (*entity.DonorProfile, error) {
-	return nil, nil
+func (r *donorProfileRepository) Update(ctx context.Context, req *entity.DonorProfile) error {
+	return r.db.WithContext(ctx).Save(req).Error
 }
