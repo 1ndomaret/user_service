@@ -37,3 +37,21 @@ func (r *donorProfileRepository) GetProfile(ctx context.Context, userID uuid.UUI
 func (r *donorProfileRepository) Update(ctx context.Context, req *entity.DonorProfile) error {
 	return r.db.WithContext(ctx).Save(req).Error
 }
+
+func (r *donorProfileRepository) Search(ctx context.Context, bloodType, city string) ([]entity.DonorProfile, error) {
+	var profiles []entity.DonorProfile
+
+	query := r.db.WithContext(ctx).Model(&entity.DonorProfile{})
+	if bloodType != "" {
+		query = query.Where("blood_type = ?", bloodType)
+	}
+	if city != "" {
+		query = query.Where("city ILIKE ?", "%"+city+"%")
+	}
+
+	if err := query.Find(&profiles).Error; err != nil {
+		return nil, err
+	}
+
+	return profiles, nil
+}

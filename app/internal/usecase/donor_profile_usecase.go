@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"context"
+	"strings"
 	"time"
 	"user-service/app/internal/domain"
 	"user-service/app/internal/entity"
@@ -59,4 +60,14 @@ func (u *donorProfileUsecase) Update(userID uuid.UUID, req *domain.UpdateProfile
 	}
 
 	return profile, nil
+}
+
+func (u *donorProfileUsecase) Search(req *domain.SearchProfileRequest) ([]entity.DonorProfile, error) {
+	bloodType := strings.TrimSpace(req.BloodType)
+	city := strings.TrimSpace(req.City)
+
+	ctx, cancel := context.WithTimeout(context.TODO(), timeOut)
+	defer cancel()
+
+	return u.donorRepo.Search(ctx, bloodType, city)
 }

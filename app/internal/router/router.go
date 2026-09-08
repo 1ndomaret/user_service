@@ -21,6 +21,7 @@ func Register(e *echo.Echo,
 	private := api.Group("")
 	private.Use(echojwt.WithConfig(middleware.JwtConfig()), middleware.ParseJwtClaims)
 
-	private.GET("/users/donor_profile", donorProfileHandler.GetProfile)
-	private.PUT("/users/donor_profile", donorProfileHandler.UpdateProfile)
+	private.GET("/users/donor-profile", donorProfileHandler.GetProfile)
+	private.PUT("/users/donor-profile", donorProfileHandler.UpdateProfile)
+	private.GET("/users/donor-profile/search", donorProfileHandler.Search)
 }

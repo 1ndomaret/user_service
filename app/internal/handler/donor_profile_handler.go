@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"strings"
 	"user-service/app/internal/domain"
 	"user-service/app/internal/helper"
 
@@ -50,4 +51,22 @@ func (h *DonorProfileHandler) UpdateProfile(c *echo.Context) error {
 	}
 
 	return helper.Success(c, 200, "Updated", profile)
+}
+
+func (h *DonorProfileHandler) Search(c *echo.Context) error {
+	req := domain.SearchProfileRequest{
+		BloodType: c.QueryParam("blood_type"),
+		City:      c.QueryParam("city"),
+	}
+
+	if strings.HasSuffix(req.BloodType, " ") {
+		req.BloodType = strings.TrimSpace(req.BloodType) + "+"
+	}
+
+	profiles, err := h.donorUsecase.Search(&req)
+	if err != nil {
+		return helper.InternalServerError(c, err.Error())
+	}
+
+	return helper.Success(c, 200, "Success", profiles)
 }

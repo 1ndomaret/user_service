@@ -20,12 +20,19 @@ type UpdateProfileRequest struct {
 	IsAvailable *bool    `json:"is_available,omitempty"`
 }
 
+type SearchProfileRequest struct {
+	BloodType string `query:"blood_type"`
+	City      string `query:"city"`
+}
+
 type DonorProfileRepository interface {
 	GetProfile(ctx context.Context, userID uuid.UUID) (*entity.DonorProfile, error)
 	Update(ctx context.Context, req *entity.DonorProfile) error
+	Search(ctx context.Context, bloodType, city string) ([]entity.DonorProfile, error)
 }
 
 type DonorProfileUsecase interface {
 	GetProfile(userID uuid.UUID) (*entity.DonorProfile, error)
 	Update(userID uuid.UUID, req *UpdateProfileRequest) (*entity.DonorProfile, error)
+	Search(req *SearchProfileRequest) ([]entity.DonorProfile, error)
 }
