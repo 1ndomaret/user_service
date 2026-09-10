@@ -11,22 +11,23 @@ import (
 )
 
 type JwtCustomClaims struct {
-	UserID uuid.UUID `json:"user_id"`
-	Email  string    `json:"email"`
-	Role   string    `json:"role"`
+	UserID  uuid.UUID `json:"user_id"`
+	DonorID uuid.UUID `json:"donor_id"`
+	Email   string    `json:"email"`
+	Role    string    `json:"role"`
 	jwt.RegisteredClaims
 }
 
 func GenerateToken(user *entity.User) (string, error) {
 	claims := &JwtCustomClaims{
 		user.ID,
+		user.DonorProfile.ID,
 		user.Email,
 		user.Role,
 		jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 3)),
 		},
 	}
-
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	secret, err := config.JWTSecret()
 	if err != nil {

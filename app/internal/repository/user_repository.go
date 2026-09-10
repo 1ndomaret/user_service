@@ -24,7 +24,7 @@ func (r *userRepository) Create(user *entity.User) error {
 func (r *userRepository) GetByEmail(email string) (*entity.User, error) {
 	var user entity.User
 
-	if err := r.db.Where("email = ?", email).First(&user).Error; err != nil {
+	if err := r.db.Preload("DonorProfile").Where("email = ?", email).First(&user).Error; err != nil {
 		return nil, err
 	}
 
