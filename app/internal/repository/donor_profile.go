@@ -34,6 +34,19 @@ func (r *donorProfileRepository) GetProfile(ctx context.Context, userID uuid.UUI
 	return &profile, nil
 }
 
+func (r *donorProfileRepository) GetByID(ctx context.Context, userID uuid.UUID) (*entity.DonorProfile, error) {
+	var profile entity.DonorProfile
+
+	if err := r.db.WithContext(ctx).Where("id = ?", userID).First(&profile).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, domain.ErrProfileNotFound
+		}
+		return nil, err
+	}
+
+	return &profile, nil
+}
+
 func (r *donorProfileRepository) Update(ctx context.Context, req *entity.DonorProfile) error {
 	return r.db.WithContext(ctx).Save(req).Error
 }

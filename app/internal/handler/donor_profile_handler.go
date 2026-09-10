@@ -70,3 +70,17 @@ func (h *DonorProfileHandler) Search(c *echo.Context) error {
 
 	return helper.Success(c, 200, "Success", profiles)
 }
+
+func (h *DonorProfileHandler) GetByID(c *echo.Context) error {
+	donorID, err := uuid.Parse(c.Param("id"))
+	if err != nil {
+		return helper.BadRequest(c, "invalid blood request id")
+	}
+
+	profile, err := h.donorUsecase.GetByID(donorID)
+	if err != nil {
+		return helper.InternalServerError(c, err.Error())
+	}
+
+	return helper.Success(c, 200, "Success", profile)
+}

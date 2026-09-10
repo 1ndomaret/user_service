@@ -71,3 +71,10 @@ func (u *donorProfileUsecase) Search(req *domain.SearchProfileRequest) ([]entity
 
 	return u.donorRepo.Search(ctx, bloodType, city)
 }
+
+func (u *donorProfileUsecase) GetByID(ID uuid.UUID) (*entity.DonorProfile, error) {
+	ctx, cancel := context.WithTimeout(context.TODO(), timeOut)
+	defer cancel()
+
+	return u.donorRepo.GetByID(ctx, ID)
+}
