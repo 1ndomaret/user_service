@@ -1,10 +1,14 @@
 package middleware
 
 import (
+	"log"
+	"net/http"
+	"os"
 	"user-service/app/internal/config"
 	"user-service/app/internal/helper"
 
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/joho/godotenv"
 	echojwt "github.com/labstack/echo-jwt/v5"
 	"github.com/labstack/echo/v5"
 )
@@ -40,5 +44,27 @@ func JwtConfig() echojwt.Config {
 			return helper.Unauthorized(c, "Missing or invalid token")
 		},
 		SigningKey: secret,
+	}
+}
+
+func StaticTokenAuth(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c *echo.Context) error {
+		err := godotenv.Load("secret.env")
+		if err != nil {
+			log.Println("using system env")
+		}
+
+		clientToken := c.Request().Header.Get("Authorization")
+		expectedToken := os.Getenv("SERVICE_TOKEN")
+
+		if expectedToken == "" {
+			return echo.NewHTTPError(http.StatusInternalServerError, "missing service token")
+		}
+
+		if clientToken != expectedToken {
+			return echo.NewHTTPError(http.StatusUnauthorized, "invalid or missing service token")
+		}
+
+		return next(c)
 	}
 }

@@ -18,13 +18,19 @@ func Register(e *echo.Echo,
 	public.POST("/users/register", userHandler.Register)
 	public.POST("/users/login", userHandler.Login)
 
-	public.GET("/users/donor-profile/:id", donorProfileHandler.GetByID)
-	public.GET("/users/donor-profile/search", donorProfileHandler.Search)
+	// public.GET("/users/donor-profile/:id", donorProfileHandler.GetByID)
+	// public.GET("/users/donor-profile/search", donorProfileHandler.Search)
 
 	private := api.Group("")
 	private.Use(echojwt.WithConfig(middleware.JwtConfig()), middleware.ParseJwtClaims)
 
 	private.GET("/users/donor-profile", donorProfileHandler.GetProfile)
 	private.PUT("/users/donor-profile", donorProfileHandler.UpdateProfile)
+
+	serviceAuth := api.Group("")
+	serviceAuth.Use(middleware.StaticTokenAuth)
+
+	serviceAuth.GET("/users/donor-profile/:id", donorProfileHandler.GetByID)
+	serviceAuth.GET("/users/donor-profile/search", donorProfileHandler.Search)
 
 }
