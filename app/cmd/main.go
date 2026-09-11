@@ -12,6 +12,12 @@ import (
 	"github.com/labstack/echo/v5"
 )
 
+// @title Restful Blood Donation User Service API
+// @version 1.0
+// @description A RESTful API using Golang Echo and PostgreSQL for a User Service API.
+// @host http://103.247.11.67:1323
+// @BasePath /api/v1
+
 func main() {
 	db, err := config.InitDB()
 	if err != nil {

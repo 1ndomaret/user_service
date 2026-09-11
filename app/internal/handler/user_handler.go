@@ -18,6 +18,16 @@ func NewUserHandler(userUsecase domain.UserUsecase) *UserHandler {
 	}
 }
 
+// @Summary   	 Creates a new user account
+// @Tags         Auth
+// @Accept       json
+// @Produce      json
+// @Param        request  body      domain.RegisterRequest  true  "User Registration Details"
+// @Success      201      {object}  helper.SwaggoResponse{data=entity.User}
+// @Failure      400      {object}  helper.ErrorResponse
+// @Failure      422      {object}  helper.ErrorResponse
+// @Failure      500      {object}  helper.ErrorResponse
+// @Router       /users/register [post]
 func (h *UserHandler) Register(c *echo.Context) error {
 	var req domain.RegisterRequest
 
@@ -41,6 +51,16 @@ func (h *UserHandler) Register(c *echo.Context) error {
 	return helper.Created(c, user)
 }
 
+// @Summary   	 Login into existing account
+// @Tags         Auth
+// @Accept       json
+// @Produce      json
+// @Param        request  body      domain.LoginRequest  true  "User Login Details"
+// @Success      200      {object}  helper.SwaggoResponse{data=entity.LoginUserResponse}
+// @Failure      400      {object}  helper.ErrorResponse
+// @Failure      422      {object}  helper.ErrorResponse
+// @Failure      500      {object}  helper.ErrorResponse
+// @Router       /users/login [post]
 func (h *UserHandler) Login(c *echo.Context) error {
 	var req domain.LoginRequest
 

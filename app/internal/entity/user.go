@@ -18,3 +18,7 @@ type User struct {
 
 	DonorProfile *DonorProfile `gorm:"foreignKey:UserID;references:ID" json:"-"`
 }
+
+type LoginUserResponse struct {
+	Token string `json:"token"`
+}

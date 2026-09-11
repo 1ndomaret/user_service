@@ -20,6 +20,16 @@ func NewDonorProfileHandler(donorUsecase domain.DonorProfileUsecase) *DonorProfi
 	}
 }
 
+// @Summary   	 Get a user's donor profile
+// @Tags         DonorProfile
+// @Accept       json
+// @Produce      json
+// @Success      200      {object}  helper.SwaggoResponse{data=entity.DonorProfile}
+// @Failure      400      {object}  helper.ErrorResponse
+// @Failure      422      {object}  helper.ErrorResponse
+// @Failure      500      {object}  helper.ErrorResponse
+// @Security     BearerAuth
+// @Router       /users/donor-profile [get]
 func (h *DonorProfileHandler) GetProfile(c *echo.Context) error {
 	userID, ok := c.Get("user_id").(uuid.UUID)
 	if !ok {
@@ -33,6 +43,17 @@ func (h *DonorProfileHandler) GetProfile(c *echo.Context) error {
 	return helper.Success(c, 200, "Success", profile)
 }
 
+// @Summary   	 Update a user's donor profile
+// @Tags         DonorProfile
+// @Accept       json
+// @Produce      json
+// @Param        request  body      domain.UpdateProfileRequest  true  "User Donor Profile Details"
+// @Success      200      {object}  helper.SwaggoResponse{data=entity.DonorProfile}
+// @Failure      400      {object}  helper.ErrorResponse
+// @Failure      422      {object}  helper.ErrorResponse
+// @Failure      500      {object}  helper.ErrorResponse
+// @Security     BearerAuth
+// @Router       /users/donor-profile [put]
 func (h *DonorProfileHandler) UpdateProfile(c *echo.Context) error {
 	userID, ok := c.Get("user_id").(uuid.UUID)
 	if !ok {
@@ -53,6 +74,18 @@ func (h *DonorProfileHandler) UpdateProfile(c *echo.Context) error {
 	return helper.Success(c, 200, "Updated", profile)
 }
 
+// @Summary   	 Get donor profiles based on city and blood type
+// @Tags         Service
+// @Accept       json
+// @Produce      json
+// @Param 			 blood_type query 		string	 false	 "Blood Type"
+// @Param 			 city       query 		string 	 false 	 "City name"
+// @Success      200      	{object}  helper.SwaggoResponse{data=[]entity.DonorProfile}
+// @Failure      400      	{object}  helper.ErrorResponse
+// @Failure      422      	{object}  helper.ErrorResponse
+// @Failure      500      	{object}  helper.ErrorResponse
+// @Security     BearerAuth
+// @Router       /users/donor-profile/search [get]
 func (h *DonorProfileHandler) Search(c *echo.Context) error {
 	req := domain.SearchProfileRequest{
 		BloodType: c.QueryParam("blood_type"),
@@ -71,6 +104,17 @@ func (h *DonorProfileHandler) Search(c *echo.Context) error {
 	return helper.Success(c, 200, "Success", profiles)
 }
 
+// @Summary   	 Get donor profile by ID
+// @Tags         Service
+// @Accept       json
+// @Produce      json
+// @Param        id       path      string true "Donor Profile ID" format(uuid)
+// @Success      200      {object}  helper.SwaggoResponse{data=entity.DonorProfile}
+// @Failure      400      {object}  helper.ErrorResponse
+// @Failure      422      {object}  helper.ErrorResponse
+// @Failure      500      {object}  helper.ErrorResponse
+// @Security     BearerAuth
+// @Router       /users/donor-profile/{id} [get]
 func (h *DonorProfileHandler) GetByID(c *echo.Context) error {
 	donorID, err := uuid.Parse(c.Param("id"))
 	if err != nil {

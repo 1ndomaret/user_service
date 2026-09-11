@@ -1,0 +1,336 @@
+basePath: /api/v1
+definitions:
+  domain.LoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  domain.RegisterRequest:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+      phone:
+        type: string
+      role:
+        type: string
+    type: object
+  domain.UpdateProfileRequest:
+    properties:
+      blood_type:
+        type: string
+      city:
+        type: string
+      is_available:
+        type: boolean
+      latitude:
+        type: number
+      longitude:
+        type: number
+    type: object
+  entity.DonorProfile:
+    properties:
+      blood_type:
+        type: string
+      city:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: string
+      is_available:
+        type: boolean
+      last_donation_date:
+        type: string
+      latitude:
+        type: number
+      longitude:
+        type: number
+      updated_at:
+        type: string
+      user_id:
+        type: string
+    type: object
+  entity.LoginUserResponse:
+    properties:
+      token:
+        type: string
+    type: object
+  entity.User:
+    properties:
+      created_at:
+        type: string
+      email:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      phone:
+        type: string
+      role:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  helper.ErrorResponse:
+    properties:
+      detail: {}
+      error_code:
+        type: string
+      message:
+        type: string
+    type: object
+  helper.SwaggoResponse:
+    properties:
+      data: {}
+      message:
+        type: string
+      status:
+        type: string
+    type: object
+host: http://103.247.11.67:1323
+info:
+  contact: {}
+  description: A RESTful API using Golang Echo and PostgreSQL for a User Service API.
+  title: Restful Blood Donation User Service API
+  version: "1.0"
+paths:
+  /users/donor-profile:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/helper.SwaggoResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/entity.DonorProfile'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helper.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/helper.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/helper.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get a user's donor profile
+      tags:
+      - DonorProfile
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: User Donor Profile Details
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/domain.UpdateProfileRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/helper.SwaggoResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/entity.DonorProfile'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helper.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/helper.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/helper.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Update a user's donor profile
+      tags:
+      - DonorProfile
+  /users/donor-profile/{id}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Donor Profile ID
+        format: uuid
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/helper.SwaggoResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/entity.DonorProfile'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helper.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/helper.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/helper.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get donor profile by ID
+      tags:
+      - Service
+  /users/donor-profile/search:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Blood Type
+        in: query
+        name: blood_type
+        type: string
+      - description: City name
+        in: query
+        name: city
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/helper.SwaggoResponse'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/entity.DonorProfile'
+                  type: array
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helper.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/helper.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/helper.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get donor profiles based on city and blood type
+      tags:
+      - Service
+  /users/login:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: User Login Details
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/domain.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/helper.SwaggoResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/entity.LoginUserResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helper.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/helper.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/helper.ErrorResponse'
+      summary: Login into existing account
+      tags:
+      - Auth
+  /users/register:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: User Registration Details
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/domain.RegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            allOf:
+            - $ref: '#/definitions/helper.SwaggoResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/entity.User'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helper.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/helper.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/helper.ErrorResponse'
+      summary: Creates a new user account
+      tags:
+      - Auth
+swagger: "2.0"
