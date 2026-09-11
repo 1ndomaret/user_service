@@ -3,7 +3,6 @@ package repository
 import (
 	"context"
 	"errors"
-	"strings"
 	"user-service/app/internal/domain"
 	"user-service/app/internal/entity"
 
@@ -57,7 +56,7 @@ func (r *donorProfileRepository) Search(ctx context.Context, bloodType, city str
 
 	query := r.db.WithContext(ctx).Model(&entity.DonorProfile{})
 	if bloodType != "" {
-		query = query.Where("blood_type = UPPER(?)", strings.ToUpper(bloodType))
+		query = query.Where("blood_type ILIKE ?", bloodType)
 	}
 	if city != "" {
 		query = query.Where("city ILIKE ?", "%"+city+"%")
