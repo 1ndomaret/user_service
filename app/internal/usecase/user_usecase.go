@@ -58,7 +58,7 @@ func (u *userUsecase) Register(req domain.RegisterRequest) (*entity.User, error)
 		Email:    req.Email,
 		Password: string(hashedPassword),
 		Phone:    req.Phone,
-		Role:     req.Role,
+		Role:     "user",
 		DonorProfile: &entity.DonorProfile{
 			ID:     uuid.New(),
 			UserID: userID,
